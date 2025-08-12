@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multi-Pilot Cost Calculator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            padding-bottom: 100px; /* Add padding to prevent content from being hidden by the footer */
+        }
+        /* Custom styles for slider thumb */
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            background: #3b82f6; /* blue-500 */
+            border-radius: 50%;
+            cursor: pointer;
+            border: 2px solid #fff;
+            box-shadow: 0 0 2px rgba(0,0,0,0.3);
+        }
+        input[type=range]::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            background: #3b82f6; /* blue-500 */
+            border-radius: 50%;
+            cursor: pointer;
+            border: 2px solid #fff;
+            box-shadow: 0 0 2px rgba(0,0,0,0.3);
+        }
+        /* Hide number input arrows */
+        input[type=number]::-webkit-inner-spin-button,
+        input[type=number]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        input[type=number] {
+            -moz-appearance: textfield;
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+
+    <div class="container mx-auto p-4 sm:p-6 lg:p-8">
+        <!-- Master Controls -->
+        <div class="w-full bg-white rounded-2xl shadow-lg p-6 mb-8">
+            <div class="text-center mb-6">
+                <h1 class="text-3xl font-bold text-gray-800">Master Controls</h1>
+                <p class="text-gray-500 mt-1">These sliders control all pilots below.</p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
+                <!-- Master Testers Slider -->
+                <div class="space-y-2">
+                    <div class="flex justify-between items-center">
+                        <label for="master-testers" class="font-medium text-gray-700">Number of Testers (All Pilots)</label>
+                        <span id="master-testers-value" class="text-lg font-semibold text-gray-700 bg-gray-100 px-3 py-1 rounded-md">15</span>
+                    </div>
+                    <input id="master-testers" type="range" min="0" max="25" value="15" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer">
+                </div>
+                <!-- Master Duration Slider -->
+                <div class="space-y-2">
+                    <div class="flex justify-between items-center">
+                        <label for="master-duration" class="font-medium text-gray-700">Duration in Months (All Pilots)</label>
+                        <span id="master-duration-value" class="text-lg font-semibold text-gray-700 bg-gray-100 px-3 py-1 rounded-md">2</span>
+                    </div>
+                    <input id="master-duration" type="range" min="1" max="12" value="2" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer">
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Grid for Calculators -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
+            
+            <!-- Calculator 1: Adobe Firefly -->
+            <div class="w-full bg-white rounded-2xl shadow-lg p-6 flex flex-col">
+                <div class="text-center mb-6"><h1 class="text-2xl font-bold text-gray-800">Adobe Firefly</h1></div>
+                <div class="space-y-2 flex-grow">
+                    <div class="flex justify-between items-center">
+                        <label for="cost-input-1" class="font-medium text-gray-700">Cost/tool/month ($)</label>
+                        <input type="number" id="cost-input-1" min="9.99" max="199.99" step="0.01" value="9.99" class="w-28 text-right font-semibold text-blue-600 bg-blue-50 px-3 py-1 rounded-md border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-400">
+                    </div>
+                    <input id="cost-slider-1" type="range" min="9.99" max="199.99" value="9.99" step="0.01" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer">
+                </div>
+                <div class="mt-8 bg-blue-50 border border-blue-100 text-blue-800 p-4 rounded-xl text-center">
+                    <h2 class="text-lg font-semibold mb-1">Estimated Total</h2><p id="total-cost-1" class="text-3xl font-bold tracking-tight">$0.00</p>
+                </div>
+            </div>
+
+            <!-- Calculator 2: Midjourney -->
+            <div class="w-full bg-white rounded-2xl shadow-lg p-6 flex flex-col">
+                <div class="text-center mb-6"><h1 class="text-2xl font-bold text-gray-800">Midjourney</h1></div>
+                <div class="space-y-2 flex-grow">
+                    <div class="flex justify-between items-center">
+                        <label for="cost-input-2" class="font-medium text-gray-700">Cost/tool/month ($)</label>
+                        <input type="number" id="cost-input-2" min="10" max="120" step="5" value="30" class="w-28 text-right font-semibold text-purple-600 bg-purple-50 px-3 py-1 rounded-md border border-gray-200 focus:outline-none focus:ring-2 focus:ring-purple-400">
+                    </div>
+                    <input id="cost-slider-2" type="range" min="10" max="120" value="30" step="5" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer">
+                </div>
+                <div class="mt-8 bg-purple-50 border border-purple-100 text-purple-800 p-4 rounded-xl text-center">
+                    <h2 class="text-lg font-semibold mb-1">Estimated Total</h2><p id="total-cost-2" class="text-3xl font-bold tracking-tight">$0.00</p>
+                </div>
+            </div>
+
+            <!-- Calculator 3: Veo 3 -->
+            <div class="w-full bg-white rounded-2xl shadow-lg p-6 flex flex-col">
+                <div class="text-center mb-6"><h1 class="text-2xl font-bold text-gray-800">Veo 3</h1></div>
+                <div class="space-y-2 flex-grow">
+                    <div class="flex justify-between items-center">
+                        <label for="cost-input-3" class="font-medium text-gray-700">Cost/tool/month ($)</label>
+                        <input type="number" id="cost-input-3" min="19.99" max="249.99" step="0.01" value="19.99" class="w-28 text-right font-semibold text-green-600 bg-green-50 px-3 py-1 rounded-md border border-gray-200 focus:outline-none focus:ring-2 focus:ring-green-400">
+                    </div>
+                    <input id="cost-slider-3" type="range" min="19.99" max="249.99" value="19.99" step="0.01" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer">
+                </div>
+                <div class="mt-8 bg-green-50 border border-green-100 text-green-800 p-4 rounded-xl text-center">
+                    <h2 class="text-lg font-semibold mb-1">Estimated Total</h2><p id="total-cost-3" class="text-3xl font-bold tracking-tight">$0.00</p>
+                </div>
+            </div>
+
+            <!-- Calculator 4: Runway ML -->
+            <div class="w-full bg-white rounded-2xl shadow-lg p-6 flex flex-col">
+                <div class="text-center mb-6"><h1 class="text-2xl font-bold text-gray-800">Runway ML</h1></div>
+                <div class="space-y-2 flex-grow">
+                    <div class="flex justify-between items-center">
+                        <label for="cost-input-4" class="font-medium text-gray-700">Cost/tool/month ($)</label>
+                        <input type="number" id="cost-input-4" min="0" max="95" step="5" value="25" class="w-28 text-right font-semibold text-red-600 bg-red-50 px-3 py-1 rounded-md border border-gray-200 focus:outline-none focus:ring-2 focus:ring-red-400">
+                    </div>
+                    <input id="cost-slider-4" type="range" min="0" max="95" value="25" step="5" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer">
+                </div>
+                <div class="mt-8 bg-red-50 border border-red-100 text-red-800 p-4 rounded-xl text-center">
+                    <h2 class="text-lg font-semibold mb-1">Estimated Total</h2><p id="total-cost-4" class="text-3xl font-bold tracking-tight">$0.00</p>
+                </div>
+            </div>
+
+            <!-- Calculator 5: Sora -->
+            <div class="w-full bg-white rounded-2xl shadow-lg p-6 flex flex-col">
+                <div class="text-center mb-6"><h1 class="text-2xl font-bold text-gray-800">Sora</h1></div>
+                <div class="space-y-2 flex-grow">
+                    <div class="flex justify-between items-center">
+                        <label for="cost-input-5" class="font-medium text-gray-700">Cost/tool/month ($)</label>
+                        <input type="number" id="cost-input-5" min="20" max="200" step="5" value="20" class="w-28 text-right font-semibold text-yellow-600 bg-yellow-50 px-3 py-1 rounded-md border border-gray-200 focus:outline-none focus:ring-2 focus:ring-yellow-400">
+                    </div>
+                    <input id="cost-slider-5" type="range" min="20" max="200" value="20" step="5" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer">
+                </div>
+                <div class="mt-8 bg-yellow-50 border border-yellow-100 text-yellow-800 p-4 rounded-xl text-center">
+                    <h2 class="text-lg font-semibold mb-1">Estimated Total</h2><p id="total-cost-5" class="text-3xl font-bold tracking-tight">$0.00</p>
+                </div>
+            </div>
+
+            <!-- Calculator 6: Luma -->
+            <div class="w-full bg-white rounded-2xl shadow-lg p-6 flex flex-col">
+                <div class="text-center mb-6"><h1 class="text-2xl font-bold text-gray-800">Luma</h1></div>
+                <div class="space-y-2 flex-grow">
+                    <div class="flex justify-between items-center">
+                        <label for="cost-input-6" class="font-medium text-gray-700">Cost/tool/month ($)</label>
+                        <input type="number" id="cost-input-6" min="29.99" max="499.99" step="0.01" value="29.99" class="w-28 text-right font-semibold text-indigo-600 bg-indigo-50 px-3 py-1 rounded-md border border-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-400">
+                    </div>
+                    <input id="cost-slider-6" type="range" min="29.99" max="499.99" value="29.99" step="0.01" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer">
+                </div>
+                <div class="mt-8 bg-indigo-50 border border-indigo-100 text-indigo-800 p-4 rounded-xl text-center">
+                    <h2 class="text-lg font-semibold mb-1">Estimated Total</h2><p id="total-cost-6" class="text-3xl font-bold tracking-tight">$0.00</p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Grand Total Footer -->
+    <div class="fixed bottom-0 left-0 right-0 bg-gray-800 text-white p-4 shadow-2xl-top">
+        <div class="container mx-auto flex justify-between items-center">
+            <h2 class="text-xl md:text-2xl font-bold">Grand Total Estimated Costs</h2>
+            <p id="grand-total-cost" class="text-2xl md:text-3xl font-bold tracking-tight">$0.00</p>
+        </div>
+    </div>
+
+
+    <script>
+        // --- DOM ELEMENTS ---
+        const masterTestersSlider = document.getElementById('master-testers');
+        const masterDurationSlider = document.getElementById('master-duration');
+        const masterTestersValue = document.getElementById('master-testers-value');
+        const masterDurationValue = document.getElementById('master-duration-value');
+        const grandTotalCostP = document.getElementById('grand-total-cost');
+
+        // --- UTILITY FUNCTIONS ---
+        const formatCurrency = (amount) => {
+            return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(amount);
+        };
+        const parseCurrency = (currencyString) => {
+            return parseFloat(currencyString.replace(/[^0-9.-]+/g,"")) || 0;
+        };
+
+        // --- CALCULATION LOGIC ---
+
+        // Recalculates all pilot costs when a master slider changes
+        function updateAllCalculations() {
+            masterTestersValue.textContent = masterTestersSlider.value;
+            masterDurationValue.textContent = masterDurationSlider.value;
+            for (let i = 1; i <= 6; i++) {
+                calculateSinglePilotCost(i);
+            }
+        }
+
+        // Calculates cost for one specific pilot and updates its display
+        function calculateSinglePilotCost(index) {
+            const numTesters = parseInt(masterTestersSlider.value);
+            const durationMonths = parseInt(masterDurationSlider.value);
+
+            const costSlider = document.getElementById(`cost-slider-${index}`);
+            const costInput = document.getElementById(`cost-input-${index}`);
+            const totalCostP = document.getElementById(`total-cost-${index}`);
+            
+            const costPerMonth = parseFloat(costSlider.value);
+            
+            // Update the input field value from the slider (or its own validated value)
+            costInput.value = costPerMonth.toFixed(2);
+
+            const totalCost = numTesters * costPerMonth * durationMonths;
+            totalCostP.textContent = formatCurrency(totalCost);
+            
+            updateGrandTotal();
+        }
+
+        // Updates the grand total display
+        function updateGrandTotal() {
+            let grandTotal = 0;
+            for (let i = 1; i <= 6; i++) {
+                grandTotal += parseCurrency(document.getElementById(`total-cost-${i}`).textContent);
+            }
+            grandTotalCostP.textContent = formatCurrency(grandTotal);
+        }
+
+        // --- INITIALIZATION ---
+        function initializeCalculators() {
+            // Add listeners to master sliders
+            masterTestersSlider.addEventListener('input', updateAllCalculations);
+            masterDurationSlider.addEventListener('input', updateAllCalculations);
+
+            // Set up two-way binding for each pilot's cost controls
+            for (let i = 1; i <= 6; i++) {
+                const costSlider = document.getElementById(`cost-slider-${i}`);
+                const costInput = document.getElementById(`cost-input-${i}`);
+
+                // Sync slider from input
+                costInput.addEventListener('input', () => {
+                    const value = parseFloat(costInput.value);
+                    const max = parseFloat(costSlider.max);
+                    // Only update if it's a valid number and not over the max
+                    if (!isNaN(value) && value <= max) {
+                        costSlider.value = value;
+                        calculateSinglePilotCost(i);
+                    }
+                });
+                
+                // Validate and format on blur
+                costInput.addEventListener('blur', () => {
+                    let value = parseFloat(costInput.value);
+                    const min = parseFloat(costSlider.min);
+                    const max = parseFloat(costSlider.max);
+                    if (isNaN(value) || value < min) {
+                        value = min;
+                    }
+                    if (value > max) {
+                        value = max;
+                    }
+                    costInput.value = value.toFixed(2);
+                    costSlider.value = value;
+                    calculateSinglePilotCost(i);
+                });
+
+                // Sync input from slider
+                costSlider.addEventListener('input', () => {
+                    costInput.value = parseFloat(costSlider.value).toFixed(2);
+                    calculateSinglePilotCost(i);
+                });
+            }
+
+            // Perform initial calculation on page load
+            updateAllCalculations();
+        }
+
+        window.onload = initializeCalculators;
+    </script>
+
+</body>
+</html>
